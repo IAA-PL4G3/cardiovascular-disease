@@ -4,7 +4,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load data
-df = pd.read_csv('cardio_train.csv', sep=';')
+df = pd.read_csv('data/cardio_train.csv', sep=';')
 print("Cardiovascular Disease Dataset - Limitations & Bias Analysis")
 
 print("\n1. Dataset Overview")
