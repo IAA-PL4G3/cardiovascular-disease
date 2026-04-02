@@ -3,7 +3,6 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
-from src.features.build_features import clean_data, split_and_scale
 import pandas as pd
 import joblib
 import sys
@@ -43,7 +42,9 @@ def evaluate_model(model, x_test, y_test):
 
 
 if __name__ == "__main__":
-    sys.path.insert(0, "../../")    
+    sys.path.insert(0, "../../")
+    from src.features.build_features import clean_data, split_and_scale
+    
     df = pd.read_csv("../../data/raw/cardio_train.csv", sep=";")
     df_cleaned = clean_data(df)
     x_train, x_test, y_train, y_test, scaler = split_and_scale(df_cleaned)
