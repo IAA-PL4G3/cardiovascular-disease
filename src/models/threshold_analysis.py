@@ -1,10 +1,3 @@
-"""
-Module for analyzing model predictions with custom confidence thresholds.
-
-Allows comparing predictions using different confidence thresholds (e.g., 50% vs 60%)
-and calculates confusion matrix metrics for each threshold.
-"""
-
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (
