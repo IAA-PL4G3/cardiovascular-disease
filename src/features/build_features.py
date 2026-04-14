@@ -14,12 +14,46 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Create engineered features: BMI and age in years"""
+    df = df.copy()
+    
+    # Create BMI: weight (kg) / (height (cm) / 100)^2
+    df['bmi'] = df['weight'] / ((df['height'] / 100) ** 2)
+    
+    # Convert age from days to years
+    df['age_years'] = df['age'] / 365.25
+    
+    # Drop raw features that are now represented in engineered features
+    df = df.drop(columns=['age', 'height', 'weight'])
+    
+    return df
+
 def split_and_scale(
     df: pd.DataFrame,
     target_col: str = "cardio",
     test_size: float = 0.2,
     random_state: int = 42,
+    use_feature_engineering: bool = False,
 ) -> tuple:
+    """
+    Split and scale data for model training
+    
+    Args:
+        df: DataFrame with features
+        target_col: Name of target column
+        test_size: Proportion of data for test set
+        random_state: Random seed for reproducibility
+        use_feature_engineering: If True, apply BMI and age_years engineering
+    
+    Returns:
+        Tuple of (X_train_scaled, X_test_scaled, y_train, y_test, scaler)
+    """
+    # Apply feature engineering if requested
+    if use_feature_engineering:
+        df = engineer_features(df)
+    # For baseline: keep all original features as-is
+    
     y = df[target_col]
     x = df.drop(columns=[target_col])
 
