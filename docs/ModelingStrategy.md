@@ -80,6 +80,8 @@ Decision Tree:        Accuracy: 0.7297, Precision: 0.7307, Recall: 0.7187, F1: 0
 Linear SVM:           Accuracy: 0.7288, Precision: 0.7588, Recall: 0.6628, F1: 0.7075
 ```
 
+![Baseline vs. Feature-Engineered Performance](../output/plots/02_baseline_vs_engineered_comparison.png)
+
 **Observation:** Feature engineering shows minimal performance differences but Decision Tree notably improves recall (0.7083 → 0.7187), suggesting better positive case detection with engineered features.
 
 ### 2.4 Threshold Optimization Analysis
@@ -93,7 +95,32 @@ Given the medical context where false negatives (missed disease cases) are more 
 
 **Threshold 0.4:** Achieves 80.5% recall on Logistic Regression, detecting 8 out of 10 disease cases while maintaining reasonable precision (67.6%).
 
+### 2.5 Learning Curves and Model Complexity
+- **Learning Curves:** We generated learning curves for all four models to check bias-variance trade-offs and understand how each model behaves as training data increases. The shaded areas represent a +/− 1 standard deviation
+
+#### 2.5.1 Decision Tree Learning Curves
+![Decision Tree Learning Curve](../output/plots/learning_curves/decision_tree_learning_curve.png)
+- Moderate overfitting: Gap between training accuracy (~0.737) and validation accuracy (~0.730)
+- Convergence: Both curves are gradually converging as training size increases, with the training accuracy steadily decreasing from ~0.759 (5k samples) toward the validation plateau which indicates that the model is learning patterns rather than memorizing noise
+- Final Observation: Small overfitting problem. The gap could potentially be reduced further by tightening max_depth or applying pruning, at the cost of some recall.
+
+#### 2.5.2 Linear SVM Learning Curves
+![Linear SVM Learning Curve](../output/plots/learning_curves/linear_svm_learning_curve.png)
+- Saturatio: The model already reaches near-peak performance with as few as 5,000 samples, suggesting the linear decision boundary is well-defined by a small subset of data and that adding more samples does not help.
+- Convergence: Training and validation curves are overlapping throughout, with both hovering around 0.725. This indicates that the model generalises as well as it trains
+- Final Observation: High-bias (underfitting) problem. The relationship between features and cardiovascular disease is not fully captured by a linear boundary. A kernel SVM or non-linear model may extract more signal.
 ---
+
+#### 2.5.3 Logistic Regression Learning Curves
+![Logistic Regression Learning Curve](../output/plots/learning_curves/logistic_regression_learning_curve.png)
+- Convergence: Like the Linear SVM, training and validation curves converge quickly and closely track each other around 0.726–0.727, reflecting very low overfitting.
+- Gains: The curves flatten early (~10,000 samples), indicating the model has extracted most of the learnable signal available to a linear classifier
+- Final Observation: High-bias (underfitting) problem.
+
+#### 2.5.4 Naive Bayes Learning Curves
+![Naive Bayes Learning Curve](../output/plots/learning_curves/naive_bayes_learning_curve.png)
+- Convergence: Unusually, training accuracy starts above validation and then dips below it around 15,000–22,000 samples before both converge near 0.709. Features are correlated, causing the model to be "overconfident" on small training sets and then increasingly miscalibrated as it sees more data.
+- Final Observation: This model is structurally limited for this task - it doesn't give the "confidence" that we would need to output probabilities to readers. The independence assumption is violated, leading to poor performance and unreliable probability estimates.
 
 ## 3. Preliminary Ethical Considerations
 
@@ -140,7 +167,6 @@ Given the medical context where false negatives (missed disease cases) are more 
 
 ### 4.4 Model Diversity Strategy
 **Expansion from Proposal:**
-- Proposal focused on adaptive feature subsets
 - Current implementation adds algorithm diversity (4 models for now)
 - Enables robust recommendations and cross-model validation
 
