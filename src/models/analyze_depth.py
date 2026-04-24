@@ -2,21 +2,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 def analyze_decision_tree_depth(X, y, max_depth_range=range(1, 21)):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train_scaled = StandardScaler().fit_transform(X_train)
+    X_test_scaled = StandardScaler().fit_transform(X_test)
     train_accuracies = []
     test_accuracies = []
     
     for depth in max_depth_range:
         clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
-        clf.fit(X_train, y_train)
+        clf.fit(X_train_scaled, y_train)
         
-        train_acc = accuracy_score(y_train, clf.predict(X_train))
-        test_acc = accuracy_score(y_test, clf.predict(X_test))
+        train_acc = accuracy_score(y_train, clf.predict(X_train_scaled))
+        test_acc = accuracy_score(y_test, clf.predict(X_test_scaled))
         
         train_accuracies.append(train_acc)
         test_accuracies.append(test_acc)
@@ -42,7 +45,7 @@ def analyze_decision_tree_depth(X, y, max_depth_range=range(1, 21)):
 def main():
     # RESULT:
     # Best Train Accuracy: 0.8859 at depth 20
-    # Best Test Accuracy: 0.7372 at depth 6
+    # Best Test Accuracy: 0.7371 at depth 6
     df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])
