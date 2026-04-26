@@ -1,5 +1,4 @@
 # Analyze neighbors in KNN
-import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
@@ -8,9 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    X_train_scaled = StandardScaler().fit_transform(X_train)
-    X_test_scaled = StandardScaler().fit_transform(X_test)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.fit_transform(X_test)
     train_accuracies = []
     test_accuracies = []
     
@@ -46,7 +46,7 @@ def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
 def main():
     # RESULT:
     # Best Train Accuracy: 1.0000 at n_neighbors 1
-    # Best Test Accuracy: 0.7242 at n_neighbors 18
+    # Best Test Accuracy: 0.7245 at n_neighbors 19
     df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])
