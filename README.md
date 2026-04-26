@@ -42,14 +42,17 @@ A typical user might know their height, weight, and age but not their exact gluc
 │       ├── train.py                   # Model training functions
 │       ├── predict.py                 # Prediction interface
 │       ├── confidence_analysis.py     # Confidence scoring
-│       └── threshold_analysis.py      # Threshold optimization
+│       ├── threshold_analysis.py      # Threshold optimization
+|       └── learning_curves.py         # Learning curve analysis
 ├── api/
 │   └── main.py                        # REST API (in development)
 ├── frontend/
 │   └── app.py                         # Web interface (in development)
 ├── docs/
-│   └── Proposal.md                    # Full project proposal
-└── models/                            # Trained model artifacts
+│   ├── Proposal.md                    # Project proposal document
+|   └── ModelingStrategy.md            # Modeling Strategy report
+├── models/                            # Trained model artifacts
+└── outputs/                           # Plots, metrics, and results (only appears after running the project)
 
 ```
 
