@@ -10,20 +10,20 @@ def analyze_decision_tree_depth(X, y, max_depth_range=range(1, 21)):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.fit_transform(X_test)
+    X_test_scaled = scaler.transform(X_test)
     train_accuracies = []
     test_accuracies = []
-    
+
     for depth in max_depth_range:
         clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
         clf.fit(X_train_scaled, y_train)
-        
+
         train_acc = accuracy_score(y_train, clf.predict(X_train_scaled))
         test_acc = accuracy_score(y_test, clf.predict(X_test_scaled))
-        
+
         train_accuracies.append(train_acc)
         test_accuracies.append(test_acc)
-    
+
     # print best accuracies and corresponding depths
     best_train_acc = max(train_accuracies)
     best_test_acc = max(test_accuracies)

@@ -10,20 +10,20 @@ def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.fit_transform(X_test)
+    X_test_scaled = scaler.transform(X_test)
     train_accuracies = []
     test_accuracies = []
-    
+
     for n_neighbors in neighbors_range:
         knn = KNeighborsClassifier(n_neighbors=n_neighbors)
         knn.fit(X_train_scaled, y_train)
 
         train_acc = accuracy_score(y_train, knn.predict(X_train_scaled))
         test_acc = accuracy_score(y_test, knn.predict(X_test_scaled))
-        
+
         train_accuracies.append(train_acc)
         test_accuracies.append(test_acc)
-    
+
     # print best accuracies and corresponding neighbors
     best_train_acc = max(train_accuracies)
     best_test_acc = max(test_accuracies)
@@ -31,7 +31,7 @@ def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
     best_test_neighbors = neighbors_range[test_accuracies.index(best_test_acc)]
     print(f"Best Train Accuracy: {best_train_acc:.4f} at n_neighbors {best_train_neighbors}")
     print(f"Best Test Accuracy: {best_test_acc:.4f} at n_neighbors {best_test_neighbors}")
-    
+
     plt.figure(figsize=(10, 6))
     plt.plot(neighbors_range, train_accuracies, label='Train Accuracy', marker='o')
     plt.plot(neighbors_range, test_accuracies, label='Test Accuracy', marker='o')
