@@ -30,6 +30,18 @@ def train_linear_svm(x_train, y_train):
     model.fit(x_train, y_train)
     return model
 
+def train_random_forest(x_train, y_train, n_estimators=140):
+    from sklearn.ensemble import RandomForestClassifier
+    model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
+    model.fit(x_train, y_train)
+    return model
+
+def train_knn(x_train, y_train, n_neighbors=5):
+    from sklearn.neighbors import KNeighborsClassifier
+    model = KNeighborsClassifier(n_neighbors=n_neighbors)
+    model.fit(x_train, y_train)
+    return model
+
 def evaluate_model(model, x_test, y_test):
     predictions = model.predict(x_test)
     acc = accuracy_score(y_test, predictions)
@@ -63,6 +75,8 @@ def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabl
         "Naive Bayes": train_naive_bayes(x_train, y_train),
         "Decision Tree": train_decision_tree(x_train, y_train, max_depth=7),
         "Linear SVM": train_linear_svm(x_train, y_train),
+        "Random Forest": train_random_forest(x_train, y_train, n_estimators=140),
+        "KNN": train_knn(x_train, y_train, n_neighbors=5)
     }
     
     results = {}
