@@ -46,7 +46,7 @@ def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
 def main():
     # RESULT:
     # Best Train Accuracy: 1.0000 at n_neighbors 1
-    # Best Test Accuracy: 0.7245 at n_neighbors 19
+    # Best Test Accuracy: 0.7232 at n_neighbors 19
     df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])

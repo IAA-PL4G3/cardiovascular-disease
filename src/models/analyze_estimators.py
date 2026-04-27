@@ -45,7 +45,7 @@ def analyze_random_forest_estimators(X, y, n_estimators_range=range(10, 201, 10)
 def main():
     # RESULT:
     # Best Train Accuracy: 1.0000 at n_estimators 100
-    # Best Test Accuracy: 0.7285 at n_estimators 170
+    # Best Test Accuracy: 0.7278 at n_estimators 80
     df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])

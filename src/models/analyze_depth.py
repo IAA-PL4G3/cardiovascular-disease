@@ -45,7 +45,7 @@ def analyze_decision_tree_depth(X, y, max_depth_range=range(1, 21)):
 def main():
     # RESULT:
     # Best Train Accuracy: 0.8818 at depth 20
-    # Best Test Accuracy: 0.7325 at depth 5
+    # Best Test Accuracy: 0.7322 at depth 5
     df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])
