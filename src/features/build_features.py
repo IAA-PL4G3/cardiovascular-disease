@@ -65,7 +65,7 @@ def split_and_scale(
     x_train_scaled = scaler.fit_transform(x_train)
     x_test_scaled = scaler.transform(x_test)
 
-    return x_train_scaled, x_test_scaled, y_train, y_test, scaler
+    return x_train_scaled, x_test_scaled, y_train, y_test, scaler, x_train
 
 if __name__ == "__main__":
     df = pd.read_csv("../../data/raw/cardio_train.csv", sep=";")

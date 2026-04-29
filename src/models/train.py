@@ -54,6 +54,12 @@ def train_lightgbm(x_train, y_train):
     model.fit(x_train, y_train)
     return model
 
+def train_knn_imputer(X_train, n_neighbors=5):
+    from sklearn.impute import KNNImputer
+    imputer = KNNImputer(n_neighbors=n_neighbors)
+    imputer.fit(X_train)
+    return imputer
+
 def evaluate_model(model, x_test, y_test):
     predictions = model.predict(x_test)
     acc = accuracy_score(y_test, predictions)
