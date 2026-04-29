@@ -5,9 +5,11 @@ import warnings
 from sklearn.exceptions import InconsistentVersionWarning
 from scipy.special import expit
 from recommendations import generate_recommendations
+from explainability import generate_all_explanations, print_all_reports
 
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
+warnings.filterwarnings("ignore", module="shap")
 
 # load previously saved models
 imputer = joblib.load('../../models/knn_imputer.pkl')
@@ -115,15 +117,23 @@ if __name__ == "__main__":
         for model_name, prob in probs.items():
             print(f"{model_name:<20}: {prob:.4f} ({prob * 100:.1f}%)")
 
-        suggestions = generate_recommendations(form_data, probability, process_and_predict)
-        if not suggestions:
-            print("No suggestions available")
-        else:
-            for i, rec in enumerate(suggestions, 1):
-                action = rec['action']
-                reduction = rec['reduction'] * 100
-                new_prob = rec['new_prob'] * 100
-                print(f"{i}. {action}")
-                print(f"   -> This would reduce your risk by {reduction:.1f}% (New Probability: {new_prob:.1f}%)")
+        user_input_suggestions = input(f"Want to check suggestions to reduce your risk? (Y/n): ")
+        if user_input_suggestions.lower() != 'n': 
+            suggestions = generate_recommendations(form_data, probability, process_and_predict)
+            if not suggestions:
+                print("No suggestions available")
+            else:
+                for i, rec in enumerate(suggestions, 1):
+                    action = rec['action']
+                    reduction = rec['reduction'] * 100
+                    new_prob = rec['new_prob'] * 100
+                    print(f"{i}. {action}")
+                    print(f"   -> This would reduce your risk by {reduction:.1f}% (New Probability: {new_prob:.1f}%)")
+        
+        user_input_explain = input(f"Want to see how each model weighed your data to reach its conclusion? (Y/n): ")
+        if user_input_explain.lower() != 'n':
+            scaled_data = scaler.transform([imputed_data_array])
+            all_contributions = generate_all_explanations(models, scaled_data)
+            print_all_reports(all_contributions)
     except ValueError as e:
         print(f"Error: {e}")
