@@ -4,6 +4,7 @@ import joblib
 import warnings
 from sklearn.exceptions import InconsistentVersionWarning
 from scipy.special import expit
+from recommendations import generate_recommendations
 
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
@@ -113,5 +114,16 @@ if __name__ == "__main__":
         print(f"Individual model probabilities")
         for model_name, prob in probs.items():
             print(f"{model_name:<20}: {prob:.4f} ({prob * 100:.1f}%)")
+
+        suggestions = generate_recommendations(form_data, probability, process_and_predict)
+        if not suggestions:
+            print("No suggestions available")
+        else:
+            for i, rec in enumerate(suggestions, 1):
+                action = rec['action']
+                reduction = rec['reduction'] * 100
+                new_prob = rec['new_prob'] * 100
+                print(f"{i}. {action}")
+                print(f"   -> This would reduce your risk by {reduction:.1f}% (New Probability: {new_prob:.1f}%)")
     except ValueError as e:
         print(f"Error: {e}")
