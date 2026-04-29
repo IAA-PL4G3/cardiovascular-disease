@@ -42,6 +42,18 @@ def train_knn(x_train, y_train, n_neighbors=5):
     model.fit(x_train, y_train)
     return model
 
+def train_xgboost(x_train, y_train):
+    from xgboost import XGBClassifier
+    model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+    model.fit(x_train, y_train)
+    return model
+
+def train_lightgbm(x_train, y_train):
+    from lightgbm import LGBMClassifier
+    model = LGBMClassifier(random_state=42)
+    model.fit(x_train, y_train)
+    return model
+
 def evaluate_model(model, x_test, y_test):
     predictions = model.predict(x_test)
     acc = accuracy_score(y_test, predictions)
@@ -76,7 +88,9 @@ def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabl
         "Decision Tree": train_decision_tree(x_train, y_train, max_depth=7),
         "Linear SVM": train_linear_svm(x_train, y_train),
         "Random Forest": train_random_forest(x_train, y_train, n_estimators=140),
-        "KNN": train_knn(x_train, y_train, n_neighbors=5)
+        "KNN": train_knn(x_train, y_train, n_neighbors=5),
+        "XGBoost": train_xgboost(x_train, y_train),
+        "LightGBM": train_lightgbm(x_train, y_train)
     }
     
     results = {}
