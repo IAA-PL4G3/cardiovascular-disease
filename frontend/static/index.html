@@ -1,133 +1,167 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cardiovascular Risk Assessment</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Cardiovascular Risk Assessment</h1>
-    <p class="subtitle">Clinical fields are optional — missing values are estimated from population data.</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cardiovascular Risk</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <main>
+            <header>
+                <h1>Cardiovascular Risk</h1>
+                <p>
+                    Clinical fields are optional - missing values are estimated
+                    from population data.
+                </p>
+            </header>
 
-    <form id="riskForm">
-      <div class="row">
-        <div class="field">
-          <label for="age">Age (years)</label>
-          <input type="number" id="age" min="1" max="120" value="45" required>
-        </div>
-        <div class="field">
-          <label for="gender">Gender</label>
-          <select id="gender">
-            <option value="1">Male</option>
-            <option value="2">Female</option>
-          </select>
-        </div>
-      </div>
+            <form id="form">
+                <section>
+                    <h2>Personal</h2>
+                    <div class="row">
+                        <label
+                            >Age (years)
+                            <input
+                                type="number"
+                                id="age"
+                                min="1"
+                                max="120"
+                                value="45"
+                                required
+                        /></label>
+                        <label
+                            >Gender
+                            <select id="gender">
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <label
+                            >Height (cm)
+                            <input
+                                type="number"
+                                id="height"
+                                min="50"
+                                max="300"
+                                step="0.1"
+                                value="170"
+                                required
+                        /></label>
+                        <label
+                            >Weight (kg)
+                            <input
+                                type="number"
+                                id="weight"
+                                min="10"
+                                max="300"
+                                step="0.1"
+                                value="70"
+                                required
+                        /></label>
+                    </div>
+                </section>
 
-      <div class="row">
-        <div class="field">
-          <label for="height">Height (cm)</label>
-          <input type="number" id="height" min="50" max="300" step="0.1" value="170.0" required>
-        </div>
-        <div class="field">
-          <label for="weight">Weight (kg)</label>
-          <input type="number" id="weight" min="10" max="300" step="0.1" value="70.0" required>
-        </div>
-      </div>
+                <section>
+                    <h2>Lifestyle</h2>
+                    <div class="checks">
+                        <label class="check"
+                            ><input type="checkbox" id="smoke" /> Smoker</label
+                        >
+                        <label class="check"
+                            ><input type="checkbox" id="alco" /> Alcohol</label
+                        >
+                        <label class="check"
+                            ><input type="checkbox" id="active" checked />
+                            Physically active</label
+                        >
+                    </div>
+                </section>
 
-      <h2>Lifestyle</h2>
-      <div class="row">
-        <div class="field checkbox-field">
-          <label for="smoke">
-            <input type="checkbox" id="smoke"> Smoker
-          </label>
-        </div>
-        <div class="field checkbox-field">
-          <label for="alco">
-            <input type="checkbox" id="alco"> Drinks alcohol
-          </label>
-        </div>
-        <div class="field checkbox-field">
-          <label for="active">
-            <input type="checkbox" id="active" checked> Physically active
-          </label>
-        </div>
-      </div>
+                <section>
+                    <h2>Clinical <span class="muted">(optional)</span></h2>
+                    <div class="row">
+                        <label
+                            >Systolic BP
+                            <input
+                                type="number"
+                                id="ap_hi"
+                                min="0"
+                                max="370"
+                                value="0"
+                        /></label>
+                        <label
+                            >Diastolic BP
+                            <input
+                                type="number"
+                                id="ap_lo"
+                                min="0"
+                                max="250"
+                                value="0"
+                        /></label>
+                    </div>
+                    <div class="row">
+                        <label
+                            >Cholesterol
+                            <select id="cholesterol">
+                                <option value="0">Unknown</option>
+                                <option value="1">Normal</option>
+                                <option value="2">Above normal</option>
+                                <option value="3">Well above normal</option>
+                            </select>
+                        </label>
+                        <label
+                            >Glucose
+                            <select id="gluc">
+                                <option value="0">Unknown</option>
+                                <option value="1">Normal</option>
+                                <option value="2">Above normal</option>
+                                <option value="3">Well above normal</option>
+                            </select>
+                        </label>
+                    </div>
+                </section>
 
-      <h2>Clinical <span class="optional">(optional — leave at 0 if unknown)</span></h2>
-      <div class="row">
-        <div class="field">
-          <label for="ap_hi">Systolic BP</label>
-          <input type="number" id="ap_hi" min="0" max="370" value="0">
-        </div>
-        <div class="field">
-          <label for="ap_lo">Diastolic BP</label>
-          <input type="number" id="ap_lo" min="0" max="250" value="0">
-        </div>
-      </div>
+                <button type="submit" id="submitBtn">Assess Risk</button>
+            </form>
 
-      <div class="row">
-        <div class="field">
-          <label for="cholesterol">Cholesterol</label>
-          <select id="cholesterol">
-            <option value="0">Unknown</option>
-            <option value="1">Normal</option>
-            <option value="2">Above normal</option>
-            <option value="3">Well above normal</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="gluc">Glucose</label>
-          <select id="gluc">
-            <option value="0">Unknown</option>
-            <option value="1">Normal</option>
-            <option value="2">Above normal</option>
-            <option value="3">Well above normal</option>
-          </select>
-        </div>
-      </div>
+            <div id="result" hidden>
+                <div class="risk-display">
+                    <span id="riskPercent"></span>
+                    <span id="riskLabel"></span>
+                </div>
+                <div class="bar"><div id="barFill"></div></div>
 
-      <button type="submit" id="submitBtn">Assess Risk</button>
-    </form>
+                <div id="estimated" hidden>
+                    <h3>Estimated values</h3>
+                    <dl id="estimatedList"></dl>
+                </div>
 
-    <div id="result" class="result hidden">
-      <div class="risk-display">
-        <span id="riskIcon"></span>
-        <div class="risk-info">
-          <span id="riskLabel" class="risk-label"></span>
-          <span id="riskPercent" class="risk-percent"></span>
-        </div>
-      </div>
-      <div class="progress-bar">
-        <div id="progressFill" class="progress-fill"></div>
-      </div>
+                <details>
+                    <summary>Recommendations</summary>
+                    <div id="recsList"></div>
+                </details>
 
-      <div id="estimatedSection" class="section hidden">
-        <h3>Estimated Missing Values</h3>
-        <div id="estimatedList"></div>
-      </div>
+                <details>
+                    <summary>Model breakdown</summary>
+                    <div id="modelsList"></div>
+                </details>
 
-      <details class="section">
-        <summary>Per-model Breakdown</summary>
-        <div id="modelBreakdown"></div>
-      </details>
+                <details>
+                    <summary>Feature explanations</summary>
+                    <div id="explList"></div>
+                </details>
 
-      <details class="section">
-        <summary>Recommendations</summary>
-        <div id="recommendationsList"></div>
-      </details>
+                <p class="disclaimer">
+                    Decision-support tool only - not a medical diagnosis.
+                </p>
+            </div>
 
-      <details class="section">
-        <summary>Explanations</summary>
-        <div id="explanationsList"></div>
-      </details>
+            <div id="error" class="error" hidden></div>
+        </main>
 
-      <p class="disclaimer">⚠️ This is a decision-support tool, not a medical diagnosis.</p>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
+        <script src="app.js"></script>
+    </body>
 </html>
