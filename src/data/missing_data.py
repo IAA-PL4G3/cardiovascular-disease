@@ -2,27 +2,25 @@ import pandas as pd
 import numpy as np
 import joblib
 import warnings
-from pathlib import Path
 from sklearn.exceptions import InconsistentVersionWarning
 from scipy.special import expit
-from src.data.recommendations import generate_recommendations
-from src.data.explainability import generate_all_explanations, print_all_reports
+from recommendations import generate_recommendations
+from explainability import generate_all_explanations, print_all_reports
 
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 warnings.filterwarnings("ignore", message="X does not have valid feature names")
 warnings.filterwarnings("ignore", module="shap")
 
 # load previously saved models
-_MODELS_DIR = Path(__file__).resolve().parents[2] / "models"
-imputer = joblib.load(_MODELS_DIR / 'knn_imputer.pkl')
-scaler = joblib.load(_MODELS_DIR / 'scaler_with_feature_engineering.pkl')
+imputer = joblib.load('../../models/knn_imputer.pkl')
+scaler = joblib.load('../../models/scaler_with_feature_engineering.pkl')
 models = {}
-models['Logistic Regression'] = joblib.load(_MODELS_DIR / 'logistic_regression_with_feature_engineering.pkl')
-models['Decision Tree'] = joblib.load(_MODELS_DIR / 'decision_tree_with_feature_engineering.pkl')
-models['Linear SVM'] = joblib.load(_MODELS_DIR / 'linear_svm_with_feature_engineering.pkl')
-models['Random Forest'] = joblib.load(_MODELS_DIR / 'random_forest_with_feature_engineering.pkl')
-models['XGBoost'] = joblib.load(_MODELS_DIR / 'xgboost_with_feature_engineering.pkl')
-models['LightGBM'] = joblib.load(_MODELS_DIR / 'lightgbm_with_feature_engineering.pkl')
+models['Logistic Regression'] = joblib.load('../../models/logistic_regression_with_feature_engineering.pkl')
+models['Decision Tree'] = joblib.load('../../models/decision_tree_with_feature_engineering.pkl')
+models['Linear SVM'] = joblib.load('../../models/linear_svm_with_feature_engineering.pkl')
+models['Random Forest'] = joblib.load('../../models/random_forest_with_feature_engineering.pkl')
+models['XGBoost'] = joblib.load('../../models/xgboost_with_feature_engineering.pkl')
+models['LightGBM'] = joblib.load('../../models/lightgbm_with_feature_engineering.pkl')
 
 def process_and_predict(form_data):
     """
