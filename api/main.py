@@ -56,9 +56,9 @@ def predict(body: Input):
     if body.gluc        is None: estimated["gluc"]        = int(imputed_row[4])
 
     return {
-        "risk_percent": round(mean_prob * 100, 1),
+        "risk_percent": round(float(mean_prob) * 100, 1),
         "risk_label":   label,
-        "models":       {k: round(v, 4) for k, v in probs.items()},
+        "models":       {k: round(float(v), 4) for k, v in probs.items()},
         "estimated":    estimated,
     }
 
