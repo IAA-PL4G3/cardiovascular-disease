@@ -1,5 +1,4 @@
-// update this to your deployed api url before pushing to github pages
-const API_BASE = "http://localhost:8000";
+const API_BASE = "";
 
 function buildPayload() {
     return {
