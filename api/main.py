@@ -3,10 +3,13 @@ from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.data.pipeline import models, scaler, process_and_predict, generate_recommendations, generate_all_explanations
+
+_STATIC = Path(__file__).resolve().parents[1] / "frontend" / "static"
 
 app = FastAPI()
 app.add_middleware(
@@ -92,3 +95,6 @@ def explain(body: Input):
         for model, pairs in contributions.items()
     }
     return {"explanations": serialisable}
+
+
+app.mount("/", StaticFiles(directory=_STATIC, html=True), name="static")
