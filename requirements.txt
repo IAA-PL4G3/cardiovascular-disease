@@ -13,3 +13,4 @@ streamlit
 requests
 xgboost
 lightgbm
+huggingface_hub
