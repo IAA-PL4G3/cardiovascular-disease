@@ -1,0 +1,15 @@
+jupyter
+pandas==2.3.3
+numpy==2.4.4
+matplotlib==3.10.9
+scipy==1.17.1
+scikit-learn
+joblib
+fastapi
+pydantic
+uvicorn
+shap
+streamlit
+requests
+xgboost
+lightgbm
