@@ -5,9 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.data.missing_data import models, scaler, process_and_predict
-from src.data.recommendations import generate_recommendations
-from src.data.explainability import generate_all_explanations
+from src.data.pipeline import models, scaler, process_and_predict, generate_recommendations, generate_all_explanations
 
 app = FastAPI()
 
