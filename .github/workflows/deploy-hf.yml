@@ -1,34 +1,35 @@
 name: Deploy to HF Space
 
 on:
-  push:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Upload code to HF Space
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          pip install huggingface_hub -q
-          python - <<'EOF'
-          import os
-          from huggingface_hub import HfApi
+            - name: Upload code to HF Space
+              env:
+                  HF_TOKEN: ${{ secrets.HF_TOKEN }}
+              run: |
+                  pip install huggingface_hub -q
+                  python - <<'EOF'
+                  import os
+                  from huggingface_hub import HfApi
 
-          api = HfApi(token=os.environ["HF_TOKEN"])
-          api.upload_folder(
-              folder_path=".",
-              repo_id="duartebranco/cardiovascular-disease",
-              repo_type="space",
-              ignore_patterns=[
-                  "*.pkl", "*.pdf", "*.ipynb",
-                  "data/", "output/", "results/", "docs/",
-                  ".git/", "__pycache__/", "*.pyc",
-                  ".venv/", "venv/", ".env",
-              ],
-          )
-          EOF
+                  api = HfApi(token=os.environ["HF_TOKEN"])
+                  api.upload_folder(
+                      folder_path=".",
+                      repo_id="duartebranco/cardiovascular-disease",
+                      repo_type="space",
+                      ignore_patterns=[
+                          "*.pkl", "*.pdf", "*.ipynb",
+                          "data/", "output/", "results/", "docs/",
+                          ".git/", "__pycache__/", "*.pyc",
+                          ".venv/", "venv/", ".env",
+                      ],
+                  )
+                  EOF

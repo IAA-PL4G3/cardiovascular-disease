@@ -1,73 +1,74 @@
 name: Train and Update Models on HF
 
 on:
-  # This runs the workflow automatically if you change the notebook or data
-  push:
-    paths:
-      - 'main.ipynb'
-      - 'data/**'
-  # This allows you to click a button in GitHub to run it manually
-  workflow_dispatch:
+    # This runs the workflow automatically if you change the notebook or data
+    push:
+        paths:
+            - "main.ipynb"
+            - "data/**"
+    pull_request:
+    # This allows you to click a button in GitHub to run it manually
+    workflow_dispatch:
 
 jobs:
-  train-and-upload:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    train-and-upload:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.10"
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install jupyter nbconvert huggingface_hub
+            - name: Install dependencies
+              run: |
+                  pip install -r requirements.txt
+                  pip install jupyter nbconvert huggingface_hub
 
-      - name: Run Notebook (Train Models)
-        run: |
-          # This executes the notebook from top to bottom
-          jupyter nbconvert --execute --to notebook --inplace main.ipynb
+            - name: Run Notebook (Train Models)
+              run: |
+                  # This executes the notebook from top to bottom
+                  jupyter nbconvert --execute --to notebook --inplace main.ipynb
 
-      - name: Upload updated models to Hugging Face
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          python - <<'EOF'
-          import os
-          from huggingface_hub import HfApi
+            - name: Upload updated models to Hugging Face
+              env:
+                  HF_TOKEN: ${{ secrets.HF_TOKEN }}
+              run: |
+                  python - <<'EOF'
+                  import os
+                  from huggingface_hub import HfApi
 
-          api = HfApi(token=os.environ["HF_TOKEN"])
-          repo_id = "duartebranco/cardiovascular-disease-models"
+                  api = HfApi(token=os.environ["HF_TOKEN"])
+                  repo_id = "duartebranco/cardiovascular-disease-models"
 
-          print(f"Fetching existing files from {repo_id}...")
-          existing_files = api.list_repo_files(repo_id=repo_id, repo_type="model")
+                  print(f"Fetching existing files from {repo_id}...")
+                  existing_files = api.list_repo_files(repo_id=repo_id, repo_type="model")
 
-          # We only care about .pkl files that already exist in the repo
-          existing_pkls = set(f for f in existing_files if f.endswith('.pkl'))
+                  # We only care about .pkl files that already exist in the repo
+                  existing_pkls = set(f for f in existing_files if f.endswith('.pkl'))
 
-          local_models_dir = "models"
-          if not os.path.exists(local_models_dir):
-              print("No models directory generated locally. Exiting.")
-              exit(0)
+                  local_models_dir = "models"
+                  if not os.path.exists(local_models_dir):
+                      print("No models directory generated locally. Exiting.")
+                      exit(0)
 
-          # Iterate through the generated local models
-          for local_file in os.listdir(local_models_dir):
-              if not local_file.endswith('.pkl'):
-                  continue
+                  # Iterate through the generated local models
+                  for local_file in os.listdir(local_models_dir):
+                      if not local_file.endswith('.pkl'):
+                          continue
 
-              if local_file in existing_pkls:
-                  local_path = os.path.join(local_models_dir, local_file)
-                  print(f"Uploading {local_file}...")
-                  api.upload_file(
-                      path_or_fileobj=local_path,
-                      path_in_repo=local_file,
-                      repo_id=repo_id,
-                      repo_type="model"
-                  )
-              else:
-                  print(f"Skipping {local_file} (not present in remote repository).")
+                      if local_file in existing_pkls:
+                          local_path = os.path.join(local_models_dir, local_file)
+                          print(f"Uploading {local_file}...")
+                          api.upload_file(
+                              path_or_fileobj=local_path,
+                              path_in_repo=local_file,
+                              repo_id=repo_id,
+                              repo_type="model"
+                          )
+                      else:
+                          print(f"Skipping {local_file} (not present in remote repository).")
 
-          print("Upload complete!")
-          EOF
+                  print("Upload complete!")
+                  EOF
