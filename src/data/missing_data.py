@@ -18,7 +18,6 @@ models = {}
 models['Logistic Regression'] = joblib.load('../../models/logistic_regression_with_feature_engineering.pkl')
 models['Decision Tree'] = joblib.load('../../models/decision_tree_with_feature_engineering.pkl')
 models['Linear SVM'] = joblib.load('../../models/linear_svm_with_feature_engineering.pkl')
-models['Random Forest'] = joblib.load('../../models/random_forest_with_feature_engineering.pkl')
 models['XGBoost'] = joblib.load('../../models/xgboost_with_feature_engineering.pkl')
 models['LightGBM'] = joblib.load('../../models/lightgbm_with_feature_engineering.pkl')
 
