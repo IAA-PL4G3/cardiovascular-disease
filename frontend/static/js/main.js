@@ -20,9 +20,7 @@ form.addEventListener("submit", async (e) => {
         ]);
 
         if (predict.status === "rejected") {
-            throw new Error(
-                "Could not reach the API. Is the server running on port 8000?",
-            );
+            throw new Error("Prediction failed. Please try again.");
         }
 
         renderResult(

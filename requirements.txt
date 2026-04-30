@@ -1,4 +1,3 @@
-jupyter
 pandas>=2.2,<3.0
 numpy>=1.26,<3.0
 matplotlib>=3.9,<4.0
@@ -9,7 +8,6 @@ fastapi
 pydantic
 uvicorn
 shap
-streamlit
 requests
 xgboost
 lightgbm

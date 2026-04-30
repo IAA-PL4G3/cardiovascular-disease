@@ -3,7 +3,6 @@ name: Deploy to HF Space
 on:
     push:
         branches: [main]
-    pull_request:
 
 jobs:
     deploy:
