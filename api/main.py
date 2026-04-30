@@ -2,12 +2,19 @@ import sys
 from pathlib import Path
 from typing import Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.data.pipeline import models, scaler, process_and_predict, generate_recommendations, generate_all_explanations
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Input(BaseModel):
@@ -26,6 +33,11 @@ class Input(BaseModel):
 
 def _to_form(body: Input) -> dict:
     return body.model_dump()
+
+
+@app.get("/models")
+def list_models():
+    return {"models": list(models.keys())}
 
 
 @app.post("/predict")
