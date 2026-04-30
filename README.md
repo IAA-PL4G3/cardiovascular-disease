@@ -1,3 +1,13 @@
+---
+title: Cardiovascular Disease
+emoji: 🫀
+colorFrom: red
+colorTo: pink
+sdk: docker
+pinned: false
+short_description: ML-based adaptive cardiovascular risk prediction API
+---
+
 # Cardiovascular Disease Prognosis: ML-Based Decision Support System
 
 ## Overview

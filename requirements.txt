@@ -1,8 +1,8 @@
 jupyter
-pandas==2.3.3
-numpy==2.4.4
-matplotlib==3.10.9
-scipy==1.17.1
+pandas>=2.2,<3.0
+numpy>=1.26,<3.0
+matplotlib>=3.9,<4.0
+scipy>=1.13,<2.0
 scikit-learn
 joblib
 fastapi
