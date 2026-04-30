@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 
-API = "http://localhost:8000/predict"
+BASE = "http://localhost:8000"
 
 st.set_page_config(page_title="Cardiovascular Risk", layout="centered")
 st.title("Cardiovascular Risk Assessment")
@@ -42,13 +42,16 @@ if submitted:
 
     with st.spinner("Calculating..."):
         try:
-            r = requests.post(API, json=payload, timeout=30)
-            r.raise_for_status()
+            r_predict = requests.post(f"{BASE}/predict", json=payload, timeout=30)
+            r_predict.raise_for_status()
         except requests.exceptions.ConnectionError:
             st.error("API not reachable. Run: uvicorn api.main:app")
             st.stop()
 
-    d     = r.json()
+        r_recs  = requests.post(f"{BASE}/recommendations", json=payload, timeout=30)
+        r_expls = requests.post(f"{BASE}/explain",          json=payload, timeout=60)
+
+    d     = r_predict.json()
     pct   = d["risk_percent"]
     label = d["risk_label"]
     icon  = {"Low": "🟢", "Moderate": "🟡", "High": "🔴"}[label]
@@ -65,5 +68,33 @@ if submitted:
     with st.expander("Per-model breakdown"):
         for name, p in d["models"].items():
             st.write(f"**{name}:** {p * 100:.1f}%")
+
+    if r_recs.ok:
+        recs = r_recs.json().get("recommendations", [])
+        with st.expander("Recommendations"):
+            if recs:
+                for rec in recs:
+                    reduction_pct = rec["reduction"] * 100
+                    new_pct       = rec["new_prob"]  * 100
+                    st.markdown(f"**{rec['action']}**")
+                    st.caption(f"Risk drops by {reduction_pct:.1f}% → new risk: {new_pct:.1f}%")
+            else:
+                st.write("No actionable recommendations based on current inputs.")
+    else:
+        with st.expander("Recommendations"):
+            st.warning("Could not load recommendations.")
+
+    if r_expls.ok:
+        expls = r_expls.json().get("explanations", {})
+        with st.expander("Explanations"):
+            for model_name, pairs in expls.items():
+                st.markdown(f"**{model_name}**")
+                for feat, impact in pairs:
+                    sign   = "+" if impact >= 0 else ""
+                    effect = "↑ increased risk" if impact >= 0 else "↓ decreased risk"
+                    st.caption(f"{feat}: {sign}{impact * 100:.1f}% ({effect})")
+    else:
+        with st.expander("Explanations"):
+            st.warning("Could not load explanations.")
 
     st.caption("⚠️ This is a decision-support tool, not a medical diagnosis.")
