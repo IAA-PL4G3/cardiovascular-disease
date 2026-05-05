@@ -18,14 +18,13 @@ models = {}
 models['Logistic Regression'] = joblib.load('../../models/logistic_regression_with_feature_engineering.pkl')
 models['Decision Tree'] = joblib.load('../../models/decision_tree_with_feature_engineering.pkl')
 models['Linear SVM'] = joblib.load('../../models/linear_svm_with_feature_engineering.pkl')
-models['Random Forest'] = joblib.load('../../models/random_forest_with_feature_engineering.pkl')
 models['XGBoost'] = joblib.load('../../models/xgboost_with_feature_engineering.pkl')
 models['LightGBM'] = joblib.load('../../models/lightgbm_with_feature_engineering.pkl')
 
 def process_and_predict(form_data):
     """
     Process user input and predict the probability of cardiovascular disease.
-    
+
     Expected form_data dictionary keys:
     age_years, gender, height, weight, ap_hi, ap_lo, cholesterol, gluc, smoke, alco, active
     """
@@ -118,7 +117,7 @@ if __name__ == "__main__":
             print(f"{model_name:<20}: {prob:.4f} ({prob * 100:.1f}%)")
 
         user_input_suggestions = input(f"Want to check suggestions to reduce your risk? (Y/n): ")
-        if user_input_suggestions.lower() != 'n': 
+        if user_input_suggestions.lower() != 'n':
             suggestions = generate_recommendations(form_data, probability, process_and_predict)
             if not suggestions:
                 print("No suggestions available")
@@ -129,7 +128,7 @@ if __name__ == "__main__":
                     new_prob = rec['new_prob'] * 100
                     print(f"{i}. {action}")
                     print(f"   -> This would reduce your risk by {reduction:.1f}% (New Probability: {new_prob:.1f}%)")
-        
+
         user_input_explain = input(f"Want to see how each model weighed your data to reach its conclusion? (Y/n): ")
         if user_input_explain.lower() != 'n':
             scaled_data = scaler.transform([imputed_data_array])

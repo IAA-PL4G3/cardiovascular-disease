@@ -1,0 +1,14 @@
+pandas>=2.2,<3.0
+numpy>=1.26,<3.0
+matplotlib>=3.9,<4.0
+scipy>=1.13,<2.0
+scikit-learn
+joblib
+fastapi
+pydantic
+uvicorn
+shap
+requests
+xgboost
+lightgbm
+huggingface_hub
