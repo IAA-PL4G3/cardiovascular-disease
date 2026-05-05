@@ -11,6 +11,7 @@ from src.data.pipeline import models, scaler, process_and_predict, generate_reco
 
 _STATIC = Path(__file__).resolve().parents[1] / "frontend" / "static"
 _OUTPUT = Path(__file__).resolve().parents[1] / "output"
+_OUTPUT.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI()
 app.add_middleware(
