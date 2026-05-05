@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.data.pipeline import models, scaler, process_and_predict, generate_recommendations, generate_all_explanations
 
 _STATIC = Path(__file__).resolve().parents[1] / "frontend" / "static"
+_OUTPUT = Path(__file__).resolve().parents[1] / "output"
 
 app = FastAPI()
 app.add_middleware(
@@ -96,5 +97,5 @@ def explain(body: Input):
     }
     return {"explanations": serialisable}
 
-
+app.mount("/output", StaticFiles(directory=_OUTPUT), name="output")
 app.mount("/", StaticFiles(directory=_STATIC, html=True), name="static")
