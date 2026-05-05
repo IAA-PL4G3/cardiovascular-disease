@@ -1,6 +1,8 @@
 name: Train and Update Models on HF
 
 on:
+    pull_request:
+        branches: [main]
     # This runs the workflow automatically if you change the notebook or data
     push:
         paths:
@@ -68,6 +70,27 @@ jobs:
                           )
                       else:
                           print(f"Skipping {local_file} (not present in remote repository).")
+                  
+                  local_plots_dir = "output/plots"
+                  if not os.path.exists(local_plots_dir):
+                      print(f"No output directory generated locally. Exiting.")
+                  else:
+                      for root, dirs, files in os.walk(local_plots_dir):
+                          for file in files:
+                              # only upload .png files
+                              if not file.endswith('.png'):
+                                  continue
+
+                              local_path = os.path.join(root, file)
+                              path_in_repo = local_path 
+                              print(f"Uploading {local_path}...")
+
+                              api.upload_file(
+                                  path_or_fileobj=local_path,
+                                  path_in_repo=path_in_repo,
+                                  repo_id=space_repo_id,
+                                  repo_type="space"
+                              )
 
                   print("Upload complete!")
                   EOF
