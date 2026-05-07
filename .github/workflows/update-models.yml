@@ -1,6 +1,8 @@
 name: Train and Update Models on HF
 
 on:
+    pull_request:
+        branches: [main]
     # This runs the workflow automatically if you change the notebook or data
     push:
         paths:
