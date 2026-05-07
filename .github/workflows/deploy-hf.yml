@@ -1,12 +1,10 @@
 name: Deploy to HF Space
 
 on:
-    workflow_run:
-        workflows: ["Train and Update Models on HF"]
-        types:
-            - completed
-    # Manual trigger if needed
-    workflow_dispatch:
+    pull_request:
+        branches: [main]
+    push:
+        branches: [main]
 
 jobs:
     deploy:
@@ -14,18 +12,12 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Download output artifact
-              uses: actions/download-artifact@v4
-              with:
-                  name: output-folder
-                  path: output/
-                  github-token: ${{ github.token }}
-                  run-id: ${{ github.event.workflow_run.id }}
-
             - name: Upload code to HF Space
               env:
                   HF_TOKEN: ${{ secrets.HF_TOKEN }}
               run: |
+                  sed -i '/output\//d' .gitignore
+                  cat .gitignore
                   pip install huggingface_hub -q
                   python - <<'EOF'
                   import os
