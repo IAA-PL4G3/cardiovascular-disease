@@ -1,16 +1,24 @@
 name: Deploy to HF Space
 
 on:
-    pull_request:
-        branches: [main]
-    push:
-        branches: [main]
+    workflow_run:
+        workflows: ["Train and Update Models on HF"]
+        types:
+            - completed
+    # Manual trigger if needed
+    workflow_dispatch:
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+
+            - name: Download output artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: output-folder
+                  path: output/
 
             - name: Upload code to HF Space
               env:
