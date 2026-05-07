@@ -1,8 +1,6 @@
 name: Deploy to HF Space
 
 on:
-    pull_request:
-        branches: [main]
     push:
         branches: [main]
 
@@ -31,6 +29,7 @@ jobs:
                           "data/", "results/", "docs/",
                           ".git/", "__pycache__/", "*.pyc",
                           ".venv/", "venv/", ".env", ".csv",
+                          "output/metrics/",
                       ],
                   )
                   EOF
