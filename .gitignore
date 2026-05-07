@@ -197,6 +197,9 @@ cython_debug/
 # Project-specific
 output/
 results/
+/models/
+catboost_info/
+CLAUDE.md
 .cursorignore
 .cursorindexingignore
 
