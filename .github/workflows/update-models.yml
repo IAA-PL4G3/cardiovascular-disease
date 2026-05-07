@@ -1,8 +1,10 @@
 name: Train and Update Models on HF
 
 on:
-    # This runs the workflow automatically if you change the notebook or data
+    # This runs the workflow automatically if you change the notebook or data on main
     push:
+        branches:
+            - main
         paths:
             - "main.ipynb"
             - "data/**"
