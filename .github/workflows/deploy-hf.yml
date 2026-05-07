@@ -1,6 +1,8 @@
 name: Deploy to HF Space
 
 on:
+    pull_request:
+        branches: [main]
     push:
         branches: [main]
 
@@ -26,9 +28,9 @@ jobs:
                       repo_type="space",
                       ignore_patterns=[
                           "*.pkl", "*.pdf", "*.ipynb",
-                          "data/", "output/", "results/", "docs/",
+                          "data/", "results/", "docs/",
                           ".git/", "__pycache__/", "*.pyc",
-                          ".venv/", "venv/", ".env",
+                          ".venv/", "venv/", ".env", ".csv",
                       ],
                   )
                   EOF
