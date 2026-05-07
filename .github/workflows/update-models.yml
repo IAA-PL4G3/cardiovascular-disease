@@ -31,6 +31,15 @@ jobs:
               run: |
                   # This executes the notebook from top to bottom
                   jupyter nbconvert --execute --to notebook --inplace main.ipynb
+            
+            - name: Upload outputs as artifact
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: generated-files
+                  path: |
+                    output/
+                  retention-days: 1
 
             - name: Upload updated models to Hugging Face
               env:
