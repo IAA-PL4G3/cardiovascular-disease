@@ -55,56 +55,6 @@ def train_lightgbm(x_train, y_train):
     return model
 
 
-def train_stacking_ensemble(x_train, y_train):
-    """
-    Advanced stacking ensemble used by the selective-prediction model.
-    Five complementary base learners (CatBoost, tuned XGBoost, tuned LightGBM,
-    HistGradientBoosting, ExtraTrees) combined by a Logistic Regression
-    meta-learner via 5-fold out-of-fold predictions. The diversity of the
-    base learners tightens the confidence ranking, which is what drives the
-    selective-prediction curve.
-    """
-    from sklearn.ensemble import (
-        StackingClassifier, HistGradientBoostingClassifier, ExtraTreesClassifier,
-    )
-    from xgboost import XGBClassifier
-    from lightgbm import LGBMClassifier
-    from catboost import CatBoostClassifier
-
-    estimators = [
-        ('catboost', CatBoostClassifier(
-            iterations=1200, depth=6, learning_rate=0.04,
-            l2_leaf_reg=3, random_state=42, verbose=False,
-        )),
-        ('xgboost', XGBClassifier(
-            n_estimators=600, max_depth=5, learning_rate=0.05,
-            subsample=0.85, colsample_bytree=0.85, min_child_weight=3,
-            gamma=0.1, reg_lambda=1.0, eval_metric='logloss',
-            random_state=42, n_jobs=-1, tree_method='hist',
-        )),
-        ('lightgbm', LGBMClassifier(
-            n_estimators=700, num_leaves=63, learning_rate=0.04,
-            subsample=0.85, colsample_bytree=0.85, min_child_samples=30,
-            reg_alpha=0.1, reg_lambda=0.1,
-            random_state=42, n_jobs=-1, verbosity=-1,
-        )),
-        ('histgb', HistGradientBoostingClassifier(
-            max_iter=600, learning_rate=0.05, max_depth=8,
-            l2_regularization=1.0, random_state=42,
-        )),
-        ('extratrees', ExtraTreesClassifier(
-            n_estimators=400, max_depth=14, min_samples_leaf=20,
-            random_state=42, n_jobs=-1,
-        )),
-    ]
-    model = StackingClassifier(
-        estimators=estimators,
-        final_estimator=LogisticRegression(max_iter=2000),
-        cv=5, n_jobs=-1, passthrough=False,
-    )
-    model.fit(x_train, y_train)
-    return model
-
 def train_knn_imputer(X_train, n_neighbors=5):
     from sklearn.impute import KNNImputer
     imputer = KNNImputer(n_neighbors=n_neighbors)
