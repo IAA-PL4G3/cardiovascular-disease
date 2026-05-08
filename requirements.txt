@@ -11,5 +11,4 @@ shap
 requests
 xgboost
 lightgbm
-catboost
 huggingface_hub

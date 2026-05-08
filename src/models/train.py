@@ -54,7 +54,6 @@ def train_lightgbm(x_train, y_train):
     model.fit(x_train, y_train)
     return model
 
-
 def train_knn_imputer(X_train, n_neighbors=5):
     from sklearn.impute import KNNImputer
     imputer = KNNImputer(n_neighbors=n_neighbors)
@@ -77,14 +76,14 @@ def evaluate_model(model, x_test, y_test):
 def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabled=False):
     """
     Train all models and evaluate them
-    
+
     Args:
         x_train: Training features
         y_train: Training labels
         x_test: Test features
         y_test: Test labels
         feature_engineering_enabled: Whether feature engineering was used
-    
+
     Returns:
         Dictionary with models and metrics
     """
@@ -99,18 +98,18 @@ def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabl
         "XGBoost": train_xgboost(x_train, y_train),
         "LightGBM": train_lightgbm(x_train, y_train)
     }
-    
+
     results = {}
     print("Model Performance:\n")
     for model_name, model in models.items():
         metrics = evaluate_model(model, x_test, y_test)
         results[model_name] = metrics
-        
+
         print(f"{model_name}:")
         for metric, value in metrics.items():
             if metric != "predictions":
                 print(f"  {metric.capitalize()}: {value:.4f}")
-        
+
         # Save model with appropriate suffix
         suffix = "_with_feature_engineering" if feature_engineering_enabled else "_baseline"
         models_dir = os.path.join(os.path.dirname(__file__), "../../models")
@@ -118,39 +117,39 @@ def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabl
         model_path = os.path.join(models_dir, f"{model_name.replace(' ', '_').lower()}{suffix}.pkl")
         joblib.dump(model, model_path)
         print(f"  Saved to: {model_path}\n")
-    
+
     return models, results
 
 def compare_models_performance(results_baseline, results_engineered):
     """Compare performance between baseline and feature-engineered models"""
-    
+
     print("COMPARISON: Baseline vs Feature-Engineered Models")
     metrics_to_compare = ["accuracy", "precision", "recall", "f1_score"]
-    
+
     for model_name in results_baseline.keys():
         print(f"{model_name}:")
         baseline_metrics = results_baseline[model_name]
         engineered_metrics = results_engineered[model_name]
-        
+
         for metric in metrics_to_compare:
             baseline_val = baseline_metrics[metric]
             engineered_val = engineered_metrics[metric]
             diff = engineered_val - baseline_val
             diff_str = f"{diff:+.4f}" if diff else "0.0000"
-            
+
             print(f"  {metric.capitalize()}:")
             print(f"    Baseline:  {baseline_val:.4f}")
             print(f"    Engineered: {engineered_val:.4f}")
             print(f"    Difference: {diff_str}")
         print()
-        
+
 if __name__ == "__main__":
     sys.path.insert(0, "../../")
     from src.features.build_features import clean_data, split_and_scale
-    
+
     df = pd.read_csv("../../data/raw/cardio_train.csv", sep=";")
     df_cleaned = clean_data(df)
-    
+
     print("TRAINING BASELINE MODELS (without feature engineering)")
     x_train_b, x_test_b, y_train_b, y_test_b, scaler_b = split_and_scale(
         df_cleaned, use_feature_engineering=False
@@ -161,7 +160,7 @@ if __name__ == "__main__":
     models_dir = os.path.join(os.path.dirname(__file__), "../../models")
     os.makedirs(models_dir, exist_ok=True)
     joblib.dump(scaler_b, os.path.join(models_dir, "scaler_baseline.pkl"))
-    
+
     print("TRAINING FEATURE-ENGINEERED MODELS")
     x_train_e, x_test_e, y_train_e, y_test_e, scaler_e = split_and_scale(
         df_cleaned, use_feature_engineering=True
@@ -170,7 +169,6 @@ if __name__ == "__main__":
         x_train_e, y_train_e, x_test_e, y_test_e, feature_engineering_enabled=True
     )
     joblib.dump(scaler_e, os.path.join(models_dir, "scaler_with_feature_engineering.pkl"))
-    
+
     # Compare results
     compare_models_performance(results_baseline, results_engineered)
-

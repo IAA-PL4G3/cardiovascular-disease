@@ -29,7 +29,6 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-
 def split_and_scale(
     df: pd.DataFrame,
     target_col: str = "cardio",
@@ -39,14 +38,14 @@ def split_and_scale(
 ) -> tuple:
     """
     Split and scale data for model training
-    
+
     Args:
         df: DataFrame with features
         target_col: Name of target column
         test_size: Proportion of data for test set
         random_state: Random seed for reproducibility
         use_feature_engineering: If True, apply BMI and age_years engineering
-    
+
     Returns:
         Tuple of (X_train_scaled, X_test_scaled, y_train, y_test, scaler)
     """
@@ -54,7 +53,7 @@ def split_and_scale(
     if use_feature_engineering:
         df = engineer_features(df)
     # For baseline: keep all original features as-is
-    
+
     y = df[target_col]
     x = df.drop(columns=[target_col])
 
@@ -71,10 +70,10 @@ def split_and_scale(
 if __name__ == "__main__":
     df = pd.read_csv("../../data/raw/cardio_train.csv", sep=";")
     print(f"Loaded data shape: {df.shape}")
-    
+
     df_cleaned = clean_data(df)
     print(f"Cleaned data shape: {df_cleaned.shape}")
-    
+
     x_train, x_test, y_train, y_test, scaler = split_and_scale(df_cleaned)
     print(f"Train-test split completed:")
     print(f"  X_train shape: {x_train.shape}")
