@@ -8,51 +8,58 @@
     </head>
     <body>
         <main>
-            <header>
-                <h1>Cardiovascular Risk</h1>
-                <p>
-                    Clinical fields are optional - missing values are estimated
-                    from population data.
-                </p>
-            </header>
+            <nav class="navbar">
+                <a href="#prediction" id="nav-prediction">Prediction</a>
+                <a href="#models" id="nav-models">Models</a>
+            </nav>
 
-            <form id="form">
-                <section>
-                    <h2>Personal</h2>
-                    <div class="row">
-                        <label
+            <!-- PREDICTION PAGE -->
+            <div id="page-prediction" class="page">
+                <header>
+                    <h1>Cardiovascular Risk</h1>
+                    <p>
+                        Clinical fields are optional - missing values are estimated
+                        from population data.
+                    </p>
+                </header>
+
+                <form id="form">
+                    <section>
+                        <h2>Personal</h2>
+                        <div class="row">
+                            <label
                             >Age (years)
-                            <input
-                                type="number"
-                                id="age"
-                                min="1"
-                                max="120"
-                                value="45"
+                                <input 
+                                type="number" 
+                                id="age" 
+                                min="1" 
+                                max="120" 
+                                value="45" 
                                 required
-                        /></label>
-                        <label
+                            /></label>
+                            <label
                             >Gender
-                            <select id="gender">
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="row">
-                        <label
+                                <select id="gender">
+                                    <option value="1">Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="row">
+                            <label
                             >Height (cm)
-                            <input
+                                <input
                                 type="number"
                                 id="height"
                                 min="50"
                                 max="300"
                                 step="0.1"
-                                value="170"
+                                value="170" 
                                 required
-                        /></label>
-                        <label
+                            /></label>
+                            <label
                             >Weight (kg)
-                            <input
+                                <input
                                 type="number"
                                 id="weight"
                                 min="10"
@@ -60,108 +67,237 @@
                                 step="0.1"
                                 value="70"
                                 required
-                        /></label>
-                    </div>
-                </section>
+                            /></label>
+                        </div>
+                    </section>
 
-                <section>
-                    <h2>Lifestyle</h2>
-                    <div class="checks">
-                        <label class="check"
-                            ><input type="checkbox" id="smoke" /> Smoker</label
-                        >
-                        <label class="check"
-                            ><input type="checkbox" id="alco" /> Alcohol</label
-                        >
-                        <label class="check"
-                            ><input type="checkbox" id="active" checked />
-                            Physically active</label
-                        >
-                    </div>
-                </section>
+                    <section>
+                        <h2>Lifestyle</h2>
+                        <div class="checks">
+                            <label class="check"
+                                ><input type="checkbox" id="smoke" /> Smoker</label
+                            >
+                            <label class="check"
+                                ><input type="checkbox" id="alco" /> Alcohol</label
+                            >
+                            <label class="check"
+                                ><input type="checkbox" id="active" checked /> 
+                                Physically active</label
+                            >
+                        </div>
+                    </section>
 
-                <section>
-                    <h2>Clinical <span class="muted">(optional)</span></h2>
-                    <div class="row">
-                        <label
+                    <section>
+                        <h2>Clinical <span class="muted">(optional)</span></h2>
+                        <div class="row">
+                            <label
                             >Systolic BP
-                            <input
+                                <input
                                 type="number"
                                 id="ap_hi"
                                 min="0"
                                 max="370"
-                                value="0"
-                        /></label>
-                        <label
+                                value="0" 
+                            /></label>
+                            <label
                             >Diastolic BP
-                            <input
+                                <input
                                 type="number"
                                 id="ap_lo"
                                 min="0"
                                 max="250"
-                                value="0"
-                        /></label>
-                    </div>
-                    <div class="row">
-                        <label
+                                value="0" 
+                            /></label>
+                        </div>
+                        <div class="row">
+                            <label
                             >Cholesterol
-                            <select id="cholesterol">
-                                <option value="0">Unknown</option>
-                                <option value="1">Normal</option>
-                                <option value="2">Above normal</option>
-                                <option value="3">Well above normal</option>
-                            </select>
-                        </label>
-                        <label
+                                <select id="cholesterol">
+                                    <option value="0">Unknown</option>
+                                    <option value="1">Normal</option>
+                                    <option value="2">Above normal</option>
+                                    <option value="3">Well above normal</option>
+                                </select>
+                            </label>
+                            <label
                             >Glucose
-                            <select id="gluc">
-                                <option value="0">Unknown</option>
-                                <option value="1">Normal</option>
-                                <option value="2">Above normal</option>
-                                <option value="3">Well above normal</option>
-                            </select>
-                        </label>
+                                <select id="gluc">
+                                    <option value="0">Unknown</option>
+                                    <option value="1">Normal</option>
+                                    <option value="2">Above normal</option>
+                                    <option value="3">Well above normal</option>
+                                </select>
+                            </label>
+                        </div>
+                    </section>
+
+                    <button type="submit" id="submitBtn">Assess Risk</button>
+                </form>
+
+                <div id="result" hidden>
+                    <div class="risk-display">
+                        <span id="riskPercent"></span>
+                        <span id="riskLabel"></span>
                     </div>
-                </section>
+                    <div class="bar"><div id="barFill"></div></div>
 
-                <button type="submit" id="submitBtn">Assess Risk</button>
-            </form>
+                    <div id="estimated" hidden>
+                        <h3>Estimated values</h3>
+                        <dl id="estimatedList"></dl>
+                    </div>
 
-            <div id="result" hidden>
-                <div class="risk-display">
-                    <span id="riskPercent"></span>
-                    <span id="riskLabel"></span>
+                    <details>
+                        <summary>Recommendations</summary>
+                        <div id="recsList"></div>
+                    </details>
+
+                    <details>
+                        <summary>Model breakdown</summary>
+                        <div id="modelsList"></div>
+                    </details>
+
+                    <details>
+                        <summary>Feature explanations</summary>
+                        <div id="explList"></div>
+                    </details>
+
+                    <p class="disclaimer">
+                        Decision-support tool only - not a medical diagnosis.
+                    </p>
                 </div>
-                <div class="bar"><div id="barFill"></div></div>
 
-                <div id="estimated" hidden>
-                    <h3>Estimated values</h3>
-                    <dl id="estimatedList"></dl>
-                </div>
-
-                <details>
-                    <summary>Recommendations</summary>
-                    <div id="recsList"></div>
-                </details>
-
-                <details>
-                    <summary>Model breakdown</summary>
-                    <div id="modelsList"></div>
-                </details>
-
-                <details>
-                    <summary>Feature explanations</summary>
-                    <div id="explList"></div>
-                </details>
-
-                <p class="disclaimer">
-                    Decision-support tool only - not a medical diagnosis.
-                </p>
+                <div id="error" class="error" hidden></div>
             </div>
 
-            <div id="error" class="error" hidden></div>
+            <!-- MODELS PAGE -->
+            <div id="page-models" class="page">
+                <header>
+                    <h1>Model Performance</h1>
+                    <p>Comparison of classifiers trained on cardiovascular data.</p>
+                </header>
+                
+                <section class="model-section">
+                    <h2>Overall Comparison</h2>
+                    <img src="output/plots/01_model_accuracy_comparison.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    
+                    <div class="spacer"></div>
+                    
+                    <h2>Learning Curves & Confusion Matrices</h2>
+                    <div class="model-grid">
+                        <article class="model-card">
+                            <h3>Logistic Regression</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/logistic_regression_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/logistic_regression_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/logistic_regression_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+
+                        <article class="model-card">
+                            <h3>Naive Bayes</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/naive_bayes_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/naive_bayes_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/naive_bayes_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+
+                        <article class="model-card">
+                            <h3>Decision Tree</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/decision_tree_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/decision_tree_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/decision_tree_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+
+                        <article class="model-card">
+                            <h3>Linear SVM</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/linear_svm_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/linear_svm_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/linear_svm_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+
+                        <article class="model-card">
+                            <h3>Random Forest</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/random_forest_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/random_forest_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/random_forest_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+
+                        <article class="model-card">
+                            <h3>K-Nearest Neighbors</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/knn_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/knn_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/knn_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+                        
+                        <article class="model-card">
+                            <h3>XGBoost</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/xgboost_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/xgboost_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/xgboost_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+                        
+                        <article class="model-card">
+                            <h3>LightGBM</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/lightgbm_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/lightgbm_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/lightgbm_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
         </main>
 
+        <!-- Lightbox Modal -->
+        <div id="imageModal" class="modal" onclick="closeModal()">
+            <span class="close-btn">&times;</span>
+            <img class="modal-content" id="expandedImg">
+        </div>
+
+        <script>
+            function openModal(src) {
+                const modal = document.getElementById("imageModal");
+                const modalImg = document.getElementById("expandedImg");
+                modal.style.display = "flex";
+                modalImg.src = src;
+            }
+
+            function closeModal() {
+                const modal = document.getElementById("imageModal");
+                modal.style.display = "none";
+            }
+
+            function handleRoute() {
+                let hash = window.location.hash || '#prediction';
+                if (!['#prediction', '#models'].includes(hash)) {
+                    hash = '#prediction';
+                }
+
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                document.querySelectorAll('.navbar a').forEach(link => link.classList.remove('active'));
+
+                const pageId = hash.replace('#', 'page-');
+                document.getElementById(pageId).classList.add('active');
+                
+                const navId = hash.replace('#', 'nav-');
+                document.getElementById(navId).classList.add('active');
+            }
+
+            window.addEventListener('hashchange', handleRoute);
+            document.addEventListener('DOMContentLoaded', handleRoute);
+        </script>
         <script src="js/api.js"></script>
         <script src="js/render.js"></script>
         <script src="js/main.js"></script>

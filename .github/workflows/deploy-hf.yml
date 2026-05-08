@@ -1,19 +1,32 @@
 name: Deploy to HF Space
 
 on:
-    push:
-        branches: [main]
+    workflow_run:
+        workflows: ["Train and Update Models on HF"]
+        types:
+            - completed
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         steps:
             - uses: actions/checkout@v4
+
+            - name: Download generated artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: generated-files
+                  path: . 
+                  github-token: ${{ github.token }}
+                  run-id: ${{ github.event.workflow_run.id }}
 
             - name: Upload code to HF Space
               env:
                   HF_TOKEN: ${{ secrets.HF_TOKEN }}
               run: |
+                  sed -i '/output\//d' .gitignore
+                  cat .gitignore
                   pip install huggingface_hub -q
                   python - <<'EOF'
                   import os
@@ -26,9 +39,10 @@ jobs:
                       repo_type="space",
                       ignore_patterns=[
                           "*.pkl", "*.pdf", "*.ipynb",
-                          "data/", "output/", "results/", "docs/",
+                          "data/", "results/", "docs/",
                           ".git/", "__pycache__/", "*.pyc",
-                          ".venv/", "venv/", ".env",
+                          ".venv/", "venv/", ".env", ".csv",
+                          "output/metrics/",
                       ],
                   )
                   EOF
