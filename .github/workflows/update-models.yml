@@ -1,15 +1,11 @@
 name: Train and Update Models on HF
 
 on:
-    pull_request:
-        branches: [main]
-    # This runs the workflow automatically if you change the notebook or data
     push:
+        branches: [main]
         paths:
             - "main.ipynb"
             - "data/**"
-    # This allows you to click a button in GitHub to run it manually
-    workflow_dispatch:
 
 jobs:
     train-and-upload:
