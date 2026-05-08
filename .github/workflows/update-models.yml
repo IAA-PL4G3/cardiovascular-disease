@@ -1,15 +1,11 @@
 name: Train and Update Models on HF
 
 on:
-    # This runs the workflow automatically if you change the notebook or data on main
     push:
-        branches:
-            - main
+        branches: [main]
         paths:
             - "main.ipynb"
             - "data/**"
-    # This allows you to click a button in GitHub to run it manually
-    workflow_dispatch:
 
 jobs:
     train-and-upload:
@@ -31,6 +27,15 @@ jobs:
               run: |
                   # This executes the notebook from top to bottom
                   jupyter nbconvert --execute --to notebook --inplace main.ipynb
+            
+            - name: Upload outputs as artifact
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: generated-files
+                  path: |
+                    output/
+                  retention-days: 1
 
             - name: Upload updated models to Hugging Face
               env:
@@ -70,6 +75,6 @@ jobs:
                           )
                       else:
                           print(f"Skipping {local_file} (not present in remote repository).")
-
+                          
                   print("Upload complete!")
                   EOF
