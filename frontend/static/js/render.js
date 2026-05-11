@@ -109,27 +109,63 @@ function renderExpls(explanations) {
 }
 
 function loadAndRenderModels() {
+    const tabsContainer = document.querySelector(".model-tabs");
+    const viewerContainer = document.querySelector(".model-viewer");
+    
+    if (!tabsContainer || !viewerContainer) {
+        return;
+    }
+    
     getModels().then(data => {
         const models = data.models;
-        const modelGrid = document.querySelector(".model-grid");
         
-        const html = models.map(modelName => {
-            const snakeCase = modelName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
-            return `<article class="model-card">
-                            <h3>${modelName}</h3>
-                            <div class="model-images">
-                                <img src="output/plots/learning_curves/${snakeCase}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-                                <img src="output/plots/confusion_matrices/${snakeCase}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-                                <img src="output/plots/roc/${snakeCase}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-                            </div>
-                        </article>`;
+        const tabsHtml = models.map((modelName, index) => {
+            const isActive = index === 0 ? "active" : "";
+            return `<button class="model-tab ${isActive}" data-model="${modelName}">
+                ${modelName}
+            </button>`;
         }).join("");
         
-        modelGrid.innerHTML = html;
+        tabsContainer.innerHTML = tabsHtml;
+        
+        document.querySelectorAll(".model-tab").forEach(tab => {
+            tab.addEventListener("click", (e) => {
+                const selectedModel = e.target.getAttribute("data-model");
+                showModelPlots(selectedModel, models);
+                
+                // Update active tab
+                document.querySelectorAll(".model-tab").forEach(t => t.classList.remove("active"));
+                e.target.classList.add("active");
+            });
+        });
+        
+        if (models.length > 0) {
+            showModelPlots(models[0], models);
+        }
     }).catch(err => {
         console.error("Failed to load models:", err);
-        document.querySelector(".model-grid").innerHTML = '<p class="empty-note">Failed to load model list.</p>';
+        if (tabsContainer) {
+            tabsContainer.innerHTML = '<p class="empty-note">Failed to load model list.</p>';
+        }
     });
+}
+
+function showModelPlots(modelName, allModels) {
+    const viewerContainer = document.querySelector(".model-viewer");
+    
+    if (!viewerContainer) {
+        return;
+    }
+    
+    const snakeCase = modelName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
+    
+    const html = `<div class="model-images">
+        <img src="output/plots/learning_curves/${snakeCase}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+        <img src="output/plots/confusion_matrices/${snakeCase}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+        <img src="output/plots/roc/${snakeCase}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+    </div>`;
+    
+    viewerContainer.innerHTML = html;
 }
 
 document.addEventListener("DOMContentLoaded", loadAndRenderModels);
