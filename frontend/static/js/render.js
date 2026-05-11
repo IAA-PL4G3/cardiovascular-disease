@@ -107,3 +107,30 @@ function renderExpls(explanations) {
             .join("") +
         `</div>`;
 }
+
+function loadAndRenderModels() {
+    getModels().then(data => {
+        const models = data.models;
+        const modelGrid = document.querySelector(".model-grid");
+        
+        const html = models.map(modelName => {
+            const snakeCase = modelName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
+            return `<article class="model-card">
+                            <h3>${modelName}</h3>
+                            <div class="model-images">
+                                <img src="output/plots/learning_curves/${snakeCase}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/confusion_matrices/${snakeCase}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                                <img src="output/plots/roc/${snakeCase}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            </div>
+                        </article>`;
+        }).join("");
+        
+        modelGrid.innerHTML = html;
+    }).catch(err => {
+        console.error("Failed to load models:", err);
+        document.querySelector(".model-grid").innerHTML = '<p class="empty-note">Failed to load model list.</p>';
+    });
+}
+
+document.addEventListener("DOMContentLoaded", loadAndRenderModels);
+
