@@ -106,6 +106,104 @@ def counterfactual_delta(models_dict, X_test_scaled, gender_test, gender_col_idx
     return mean_female - mean_male
 
 
+# Pipeline-aware counterfactual (imputer + scaler + models, like the API)
+
+def pipeline_counterfactual_delta(models_dict, imputer, scaler, patients):
+    """
+    Replicate the full API inference pipeline for a grid of patients with
+    blood pressure and glucose left unknown (NaN), so the KNN imputer fills
+    them using gender as a neighbour feature
+    """
+    from scipy.special import expit
+
+    def to_df(patients, gender):
+        rows = []
+        for p in patients:
+            bmi = p["weight"] / (p["height"] / 100) ** 2
+            rows.append({
+                "gender": gender,
+                "ap_hi": np.nan,
+                "ap_lo": np.nan,
+                "cholesterol": float(p["cholesterol"]),
+                "gluc": np.nan,
+                "smoke": p["smoke"],
+                "alco": p["alco"],
+                "active": p["active"],
+                "bmi": bmi,
+                "age_years": p["age_years"],
+            })
+        return pd.DataFrame(rows)
+
+    def mean_ensemble_prob(df):
+        imputed = imputer.transform(df)
+        scaled = scaler.transform(imputed)
+        probs_list = []
+        for model in models_dict.values():
+            if hasattr(model, "predict_proba"):
+                probs_list.append(model.predict_proba(scaled)[:, 1])
+            else:
+                probs_list.append(expit(model.decision_function(scaled)))
+        return np.mean(probs_list, axis=0) * 100
+
+    male_probs = mean_ensemble_prob(to_df(patients, 1))
+    female_probs = mean_ensemble_prob(to_df(patients, 2))
+    return female_probs - male_probs
+
+
+def plot_pipeline_comparison(local_deltas, pipeline_deltas, save_path):
+    """
+    Two-row figure comparing local (no imputer) vs pipeline (with imputer)
+    counterfactual gender deltas across all strategies.
+    """
+    fig, axes = plt.subplots(2, 3, figsize=(15, 9))
+
+    for col, strategy in enumerate(STRATEGIES):
+        color = STRATEGY_COLORS[strategy]
+
+        # top row: local delta distribution
+        ax = axes[0, col]
+        ax.hist(local_deltas[strategy], bins=40, color=color, alpha=0.75, edgecolor="white", lw=0.4)
+        ax.axvline(0, color="#c00", lw=1, ls="--")
+        ax.axvline(local_deltas[strategy].mean(), color="#111", lw=1.2,
+                   label=f"mean {local_deltas[strategy].mean():+.1f}%")
+        ax.set_title(f"{strategy} - Local (no imputer)", fontsize=10, fontweight="bold")
+        ax.set_xlabel("Delta (%)", fontsize=8)
+        ax.set_ylabel("Count", fontsize=8)
+        ax.legend(fontsize=7)
+        ax.grid(axis="y", alpha=0.3)
+
+        # bottom row: pipeline delta distribution
+        ax = axes[1, col]
+        ax.hist(pipeline_deltas[strategy], bins=40, color=color, alpha=0.75, edgecolor="white", lw=0.4)
+        ax.axvline(0, color="#c00", lw=1, ls="--")
+        ax.axvline(pipeline_deltas[strategy].mean(), color="#111", lw=1.2,
+                   label=f"mean {pipeline_deltas[strategy].mean():+.1f}%")
+        ax.set_title(f"{strategy} - Pipeline (with imputer)", fontsize=10, fontweight="bold")
+        ax.set_xlabel("Delta (%)", fontsize=8)
+        ax.set_ylabel("Count", fontsize=8)
+        ax.legend(fontsize=7)
+        ax.grid(axis="y", alpha=0.3)
+
+    fig.suptitle(
+        "Gender Delta: Local model call vs Full pipeline (imputer amplifies gender signal)",
+        fontsize=12, y=1.01
+    )
+    plt.tight_layout()
+    plt.savefig(save_path, bbox_inches="tight", dpi=150)
+    print(f"Plot saved: {save_path}")
+
+
+def print_pipeline_summary(local_deltas, pipeline_deltas):
+    print("\nGender delta comparison - local model vs full pipeline (with imputer)\n")
+    header = f"{'Strategy':<12}  {'Local mean|d|':>14}  {'Local std':>10}  {'Pipeline mean|d|':>17}  {'Pipeline std':>12}"
+    print(header)
+    print("-" * len(header))
+    for s in STRATEGIES:
+        ld = local_deltas[s].abs()
+        pd_ = pipeline_deltas[s].abs()
+        print(f"{s:<12}  {ld.mean():>14.2f}%  {ld.std():>9.2f}%  {pd_.mean():>17.2f}%  {pd_.std():>11.2f}%")
+
+
 # Plotting
 
 def plot_comparison(fairness_all, delta_all, save_path):
