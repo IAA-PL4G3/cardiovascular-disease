@@ -358,6 +358,13 @@ summary::-webkit-details-marker {
     display: block;
 }
 
+.body-text {
+    font-size: 0.875rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
 .model-section {
     margin-bottom: 3rem;
 }

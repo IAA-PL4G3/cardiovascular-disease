@@ -11,6 +11,8 @@
             <nav class="navbar">
                 <a href="#prediction" id="nav-prediction">Prediction</a>
                 <a href="#models" id="nav-models">Models</a>
+                <a href="#recall" id="nav-recall">Recall</a>
+                <a href="#comparison" id="nav-comparison">Comparison</a>
             </nav>
 
             <!-- PREDICTION PAGE -->
@@ -189,6 +191,89 @@
                     </div>
                 </section>
             </div>
+
+            <!-- RECALL PAGE -->
+            <div id="page-recall" class="page">
+                <header>
+                    <h1>Why Recall Matters</h1>
+                    <p>In cardiovascular risk prediction, a missed positive is more dangerous than a false alarm.</p>
+                </header>
+
+                <section class="model-section">
+                    <h2>The cost of a false negative</h2>
+                    <p class="body-text">
+                        Recall (sensitivity) measures how many actual high-risk patients the model correctly flags.
+                        A low-recall model misses sick patients - they leave without intervention and may suffer a cardiac event.
+                        A false positive, by contrast, leads to an unnecessary follow-up: annoying, but not fatal.
+                        For a decision-support tool in a clinical setting, maximising recall at an acceptable precision is the right trade-off.
+                    </p>
+                </section>
+
+                <div class="spacer"></div>
+
+                <section class="model-section">
+                    <h2>Recall across models</h2>
+                    <p class="body-text">Baseline vs feature-engineered recall for all classifiers.</p>
+                    <img src="output/plots/04_recall_comparison.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                </section>
+
+                <div class="spacer"></div>
+
+                <section class="model-section">
+                    <h2>Threshold analysis</h2>
+                    <p class="body-text">
+                        The default threshold of 0.5 is not optimal for recall.
+                        Lowering it to 0.4 increases recall significantly at the cost of some precision - more patients flagged, fewer missed.
+                    </p>
+                    <img src="output/plots/05_threshold_analysis.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                </section>
+
+                <div class="spacer"></div>
+
+                <section class="model-section">
+                    <h2>Selective prediction</h2>
+                    <p class="body-text">
+                        By only predicting on cases where the model is confident, accuracy climbs above 85% -
+                        deferring uncertain cases to a clinician rather than forcing a low-confidence call.
+                    </p>
+                    <img src="output/plots/03_selective_prediction_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                </section>
+            </div>
+
+            <!-- COMPARISON PAGE -->
+            <div id="page-comparison" class="page">
+                <header>
+                    <h1>Baseline vs Feature Engineering</h1>
+                    <p>Impact of replacing raw age, height and weight with BMI and age in years.</p>
+                </header>
+
+                <section class="model-section">
+                    <h2>What changed</h2>
+                    <p class="body-text">
+                        The baseline uses raw features: age in days, height (cm), weight (kg).
+                        Feature engineering replaces these with BMI (weight / height²) and age in years -
+                        more clinically meaningful and less correlated with each other.
+                        The scaler and KNN imputer used at inference are trained on the engineered feature space.
+                    </p>
+                </section>
+
+                <div class="spacer"></div>
+
+                <section class="model-section">
+                    <h2>Metrics comparison</h2>
+                    <p class="body-text">Accuracy, precision, recall and F1 for all models - baseline vs engineered.</p>
+                    <img src="output/plots/02_baseline_vs_engineered_comparison.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                </section>
+
+                <div class="spacer"></div>
+
+                <section class="model-section">
+                    <h2>ROC curves</h2>
+                    <p class="body-text">AUC comparison across all classifiers using the feature-engineered models.</p>
+                    <img src="output/plots/roc/roc_comparison.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                </section>
+            </div>
+
         </main>
 
         <!-- Lightbox Modal -->
@@ -212,7 +297,7 @@
 
             function handleRoute() {
                 let hash = window.location.hash || '#prediction';
-                if (!['#prediction', '#models'].includes(hash)) {
+                if (!['#prediction', '#models', '#recall', '#comparison'].includes(hash)) {
                     hash = '#prediction';
                 }
 
