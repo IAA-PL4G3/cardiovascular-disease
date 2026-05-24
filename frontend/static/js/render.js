@@ -107,3 +107,55 @@ function renderExpls(explanations) {
             .join("") +
         `</div>`;
 }
+
+const ALL_PLOT_MODELS = [
+    "Decision Tree",
+    "KNN",
+    "LightGBM",
+    "Linear SVM",
+    "Logistic Regression",
+    "Naive Bayes",
+    "Random Forest",
+    "XGBoost",
+];
+
+function toSnakeCase(name) {
+    return name.toLowerCase().replace(/\s+/g, "_");
+}
+
+function loadAndRenderModels() {
+    const tabsContainer = document.querySelector(".model-tabs");
+    const viewerContainer = document.querySelector(".model-viewer");
+
+    if (!tabsContainer || !viewerContainer) return;
+
+    tabsContainer.innerHTML = ALL_PLOT_MODELS.map((name, i) =>
+        `<button type="button" class="model-tab${i === 0 ? " active" : ""}" data-model="${name}">${name}</button>`
+    ).join("");
+
+    viewerContainer.innerHTML = ALL_PLOT_MODELS.map((name, i) => {
+        const key = toSnakeCase(name);
+        return `<div class="model-images" data-panel="${name}" style="${i !== 0 ? "display:none" : ""}">
+            <img src="output/plots/learning_curves/${key}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+            <img src="output/plots/confusion_matrices/${key}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+            <img src="output/plots/roc/${key}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+        </div>`;
+    }).join("");
+
+    tabsContainer.addEventListener("click", (e) => {
+        const tab = e.target.closest(".model-tab");
+        if (!tab) return;
+
+        const selected = tab.getAttribute("data-model");
+
+        tabsContainer.querySelectorAll(".model-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        viewerContainer.querySelectorAll(".model-images").forEach(panel => {
+            panel.style.display = panel.getAttribute("data-panel") === selected ? "" : "none";
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", loadAndRenderModels);
+

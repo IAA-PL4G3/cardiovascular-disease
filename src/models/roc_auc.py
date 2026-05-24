@@ -68,4 +68,3 @@ def compare_models(models_dict, X_test, y_test):
     plt.ylabel("True Positive Rate")
     plt.title("ROC Curve Comparison")
     plt.legend()
-    plt.show()

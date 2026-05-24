@@ -1,5 +1,7 @@
 const API_BASE = "";
 
+const getModels = () => fetch(API_BASE + "/models").then(res => res.json());
+
 function buildPayload() {
     return {
         age_years: +document.getElementById("age").value,
@@ -25,3 +27,4 @@ async function post(path, body) {
     if (!res.ok) throw new Error(`${path} responded with ${res.status}`);
     return res.json();
 }
+
