@@ -3,6 +3,43 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+
+def compute_gender_weights(gender_train):
+    """
+    Return per-sample weights that upweight the minority gender so both
+    groups contribute equally to the loss
+    """
+    gender_arr = np.asarray(gender_train)
+    counts = {g: (gender_arr == g).sum() for g in np.unique(gender_arr)}
+    n_groups = len(counts)
+    n_total = len(gender_arr)
+    weights = np.array([
+        n_total / (n_groups * counts[g]) for g in gender_arr
+    ])
+    return weights
+
+
+def smote_balance_gender(X_train_scaled, y_train, gender_train, random_state=42):
+    """
+    Oversample the minority gender in the training set using SMOTE
+    """
+    from imblearn.over_sampling import SMOTE
+
+    gender_arr = np.asarray(gender_train)
+    y_arr = np.asarray(y_train)
+
+    # Carry y along as an extra feature so SMOTE interpolates it too
+    Xy = np.column_stack([X_train_scaled, y_arr])
+
+    smote = SMOTE(random_state=random_state)
+    Xy_balanced, _ = smote.fit_resample(Xy, gender_arr)
+
+    X_balanced = Xy_balanced[:, :-1]
+    # Round the interpolated y back to binary
+    y_balanced = np.round(Xy_balanced[:, -1]).astype(int)
+
+    return X_balanced, y_balanced
+
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # filter extreme blood pressure values
     df = df[(df["ap_hi"] > 40) & (df["ap_hi"] < 370)]
@@ -74,7 +111,7 @@ if __name__ == "__main__":
     df_cleaned = clean_data(df)
     print(f"Cleaned data shape: {df_cleaned.shape}")
 
-    x_train, x_test, y_train, y_test, scaler = split_and_scale(df_cleaned)
+    x_train, x_test, y_train, y_test, scaler, _ = split_and_scale(df_cleaned)
     print(f"Train-test split completed:")
     print(f"  X_train shape: {x_train.shape}")
     print(f"  X_test shape: {x_test.shape}")
