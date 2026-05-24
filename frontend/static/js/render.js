@@ -108,64 +108,53 @@ function renderExpls(explanations) {
         `</div>`;
 }
 
+const ALL_PLOT_MODELS = [
+    "Decision Tree",
+    "KNN",
+    "LightGBM",
+    "Linear SVM",
+    "Logistic Regression",
+    "Naive Bayes",
+    "Random Forest",
+    "XGBoost",
+];
+
+function toSnakeCase(name) {
+    return name.toLowerCase().replace(/\s+/g, "_");
+}
+
 function loadAndRenderModels() {
     const tabsContainer = document.querySelector(".model-tabs");
     const viewerContainer = document.querySelector(".model-viewer");
-    
-    if (!tabsContainer || !viewerContainer) {
-        return;
-    }
-    
-    getModels().then(data => {
-        const models = data.models;
-        
-        const tabsHtml = models.map((modelName, index) => {
-            const isActive = index === 0 ? "active" : "";
-            return `<button class="model-tab ${isActive}" data-model="${modelName}">
-                ${modelName}
-            </button>`;
-        }).join("");
-        
-        tabsContainer.innerHTML = tabsHtml;
-        
-        document.querySelectorAll(".model-tab").forEach(tab => {
-            tab.addEventListener("click", (e) => {
-                const selectedModel = e.target.getAttribute("data-model");
-                showModelPlots(selectedModel, models);
-                
-                // Update active tab
-                document.querySelectorAll(".model-tab").forEach(t => t.classList.remove("active"));
-                e.target.classList.add("active");
-            });
-        });
-        
-        if (models.length > 0) {
-            showModelPlots(models[0], models);
-        }
-    }).catch(err => {
-        console.error("Failed to load models:", err);
-        if (tabsContainer) {
-            tabsContainer.innerHTML = '<p class="empty-note">Failed to load model list.</p>';
-        }
-    });
-}
 
-function showModelPlots(modelName, allModels) {
-    const viewerContainer = document.querySelector(".model-viewer");
-    
-    if (!viewerContainer) {
-        return;
-    }
-    
-    const snakeCase = modelName.toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
-    
-    const html = `<div class="model-images">
-        <img src="output/plots/learning_curves/${snakeCase}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-        <img src="output/plots/confusion_matrices/${snakeCase}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-        <img src="output/plots/roc/${snakeCase}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
-    </div>`;
-    
-    viewerContainer.innerHTML = html;
+    if (!tabsContainer || !viewerContainer) return;
+
+    tabsContainer.innerHTML = ALL_PLOT_MODELS.map((name, i) =>
+        `<button type="button" class="model-tab${i === 0 ? " active" : ""}" data-model="${name}">${name}</button>`
+    ).join("");
+
+    viewerContainer.innerHTML = ALL_PLOT_MODELS.map((name, i) => {
+        const key = toSnakeCase(name);
+        return `<div class="model-images" data-panel="${name}" style="${i !== 0 ? "display:none" : ""}">
+            <img src="output/plots/learning_curves/${key}_learning_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+            <img src="output/plots/confusion_matrices/${key}_confusion_matrix.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+            <img src="output/plots/roc/${key}_roc_curve.png" class="plot-img" onclick="openModal(this.src)" onerror="this.style.display='none'">
+        </div>`;
+    }).join("");
+
+    tabsContainer.addEventListener("click", (e) => {
+        const tab = e.target.closest(".model-tab");
+        if (!tab) return;
+
+        const selected = tab.getAttribute("data-model");
+
+        tabsContainer.querySelectorAll(".model-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        viewerContainer.querySelectorAll(".model-images").forEach(panel => {
+            panel.style.display = panel.getAttribute("data-panel") === selected ? "" : "none";
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", loadAndRenderModels);
