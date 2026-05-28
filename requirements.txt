@@ -12,3 +12,4 @@ requests
 xgboost
 lightgbm
 huggingface_hub
+imbalanced-learn
