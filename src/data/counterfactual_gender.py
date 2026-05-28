@@ -179,7 +179,7 @@ def plot_results(df: pd.DataFrame, out_path: str):
 
 
 def main():
-    default_out = str(OUTPUT_PLOTS / "07_counterfactual_gender.png")
+    default_out = str(OUTPUT_PLOTS / "07_counterfactual_gender_after_fix.png")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://localhost:8000",
