@@ -51,8 +51,9 @@ def process_and_predict(form_data):
     gluc = handle_optional(form_data.get('gluc'))
 
     # create a DataFrame matching the feature-engineered training structure
+    actual_gender = form_data['gender']
     user_df = pd.DataFrame([{
-        'gender': form_data['gender'],
+        'gender': actual_gender,
         'ap_hi': ap_hi,
         'ap_lo': ap_lo,
         'cholesterol': cholesterol,
@@ -65,9 +66,14 @@ def process_and_predict(form_data):
     }])
 
     # apply KNN Imputer to fill missing values
-    imputed_data_array = imputer.transform(user_df)
-    imputed_data_array[0, 3] = round(imputed_data_array[0, 3]) # cholesterol
-    imputed_data_array[0, 4] = round(imputed_data_array[0, 4]) # gluc
+    # gender is neutralised to the training population mean before imputation so it
+    _GENDER_MEAN = 1.35
+    user_df_for_impute = user_df.copy()
+    user_df_for_impute['gender'] = _GENDER_MEAN
+    imputed_data_array = imputer.transform(user_df_for_impute)
+    imputed_data_array[0, 0] = actual_gender  # restore gender (column 0)
+    imputed_data_array[0, 3] = round(imputed_data_array[0, 3])  # cholesterol
+    imputed_data_array[0, 4] = round(imputed_data_array[0, 4])  # gluc
 
     # scale the data
     scaled_data = scaler.transform(imputed_data_array)
