@@ -6,6 +6,7 @@ on:
         paths:
             - "main.ipynb"
             - "data/**"
+            - "requirements.txt"
 
 jobs:
     train-and-upload:
