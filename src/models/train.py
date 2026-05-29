@@ -19,8 +19,7 @@ def train_naive_bayes(x_train, y_train):
     model.fit(x_train, y_train)
     return model
 
-def train_decision_tree(x_train, y_train, max_depth=7):
-    # max_depth added to prevent severe overfitting
+def train_decision_tree(x_train, y_train, max_depth=5):
     model = DecisionTreeClassifier(max_depth=max_depth, random_state=42)
     model.fit(x_train, y_train)
     return model
@@ -30,13 +29,13 @@ def train_linear_svm(x_train, y_train):
     model.fit(x_train, y_train)
     return model
 
-def train_random_forest(x_train, y_train, n_estimators=140):
+def train_random_forest(x_train, y_train, n_estimators=80, max_depth=8):
     from sklearn.ensemble import RandomForestClassifier
-    model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
+    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
     model.fit(x_train, y_train)
     return model
 
-def train_knn(x_train, y_train, n_neighbors=5):
+def train_knn(x_train, y_train, n_neighbors=19):
     from sklearn.neighbors import KNeighborsClassifier
     model = KNeighborsClassifier(n_neighbors=n_neighbors)
     model.fit(x_train, y_train)
@@ -44,13 +43,13 @@ def train_knn(x_train, y_train, n_neighbors=5):
 
 def train_xgboost(x_train, y_train):
     from xgboost import XGBClassifier
-    model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+    model = XGBClassifier(max_depth=3, learning_rate=0.1, eval_metric='logloss', random_state=42)
     model.fit(x_train, y_train)
     return model
 
 def train_lightgbm(x_train, y_train):
     from lightgbm import LGBMClassifier
-    model = LGBMClassifier(random_state=42)
+    model = LGBMClassifier(num_leaves=20, learning_rate=0.1, random_state=42, verbose=-1)
     model.fit(x_train, y_train)
     return model
 
@@ -91,10 +90,10 @@ def train_all_models(x_train, y_train, x_test, y_test, feature_engineering_enabl
     models = {
         "Logistic Regression": train_logistic_regression(x_train, y_train),
         "Naive Bayes": train_naive_bayes(x_train, y_train),
-        "Decision Tree": train_decision_tree(x_train, y_train, max_depth=7),
+        "Decision Tree": train_decision_tree(x_train, y_train),
         "Linear SVM": train_linear_svm(x_train, y_train),
-        "Random Forest": train_random_forest(x_train, y_train, n_estimators=140),
-        "KNN": train_knn(x_train, y_train, n_neighbors=5),
+        "Random Forest": train_random_forest(x_train, y_train),
+        "KNN": train_knn(x_train, y_train),
         "XGBoost": train_xgboost(x_train, y_train),
         "LightGBM": train_lightgbm(x_train, y_train)
     }
