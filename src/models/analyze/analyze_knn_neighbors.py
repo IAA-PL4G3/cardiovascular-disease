@@ -1,4 +1,5 @@
 # Analyze neighbors in KNN
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
@@ -41,13 +42,15 @@ def analyze_knn_neighbors(X, y, neighbors_range=range(1, 21)):
     plt.xticks(neighbors_range)
     plt.legend()
     plt.grid()
+    os.makedirs("./results", exist_ok=True)
+    plt.savefig("./results/knn_neighbors.png", dpi=150, bbox_inches='tight')
     plt.show()
 
 def main():
     # RESULT:
     # Best Train Accuracy: 1.0000 at n_neighbors 1
     # Best Test Accuracy: 0.7232 at n_neighbors 19
-    df = pd.read_csv("../../data/processed/cardio_train_cleaned.csv", sep=",")
+    df = pd.read_csv("../../../data/processed/cardio_train_cleaned.csv", sep=",")
     y = df['cardio']
     X = df.drop(columns=['cardio'])
     analyze_knn_neighbors(X, y)
